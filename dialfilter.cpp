@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include<QJsonObject>
 #include<QJsonArray>
+#include<QDir>
 
 using namespace std;
 
@@ -54,16 +55,36 @@ void DialFilter::resetContactList()
 {
 
     unsigned long x,maxItem;
-    QFile file;
+   // QFile file;
     QString val;
-    file.setFileName("/home/anh/git_environment/testqml/contacts.json");
+    //QString homePath = QDir::homePath();
+    QString currentPath;
+    currentPath = QDir::currentPath();
+
+    QFile file(currentPath + "/contacts.json");
+    if (!file.exists()) {
+
+        //file.setFileName("contacts.json");
+        QString errMsg;
+        QFileDevice::FileError err = QFileDevice::NoError;
+        if (!file.open(QIODevice::ReadOnly)) {
+            errMsg = file.errorString();
+            err = file.error();
+
+            qDebug()<< "errMsg"<<errMsg<<". err:"<< err;
+        };
+
+
+
+    }
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     val = file.readAll();
     file.close();
     QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
 
 
-    ifstream i("/home/anh/test2/contacts.json");
+    ifstream i("contacts.json");
+
 
     maxItem = mContacts.size();
     //Clear all items
